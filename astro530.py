@@ -26,17 +26,20 @@ def Planck(wn, T):
 
 def _trapz(y, x):
     # Integrate numerically using the trapezoid rule
-    area = 0
-    for i in range(len(x) - 1):
-        dx = x[i+1] - x[i]
-        area += (y[i] + y[i+1]) / 2 * dx 
-    return area
+    dx = np.diff(x)
+    area = (y[:-1] + y[1:]) / 2 * dx
+    return np.sum(area)
 
-def NIntegrate(func, a, b, dx, integrator = _trapz, **kwargs):
+def NIntegrate(func, a, b, density, unit = None, integrator = _trapz, **kwargs):
     '''
-        numerically integrate 'func' from x = a to x = b with step size dx 
+        func - function to numerically integrate
+        a - lower bound
+        b - upper bound
+        density - number of subintervals per unit 
     '''
-    n = int((b - a) * dx)
-    x = 10 ** np.linspace(a, b, n)
+    n = round((b - a) * density)
+    x = np.linspace(a, b, n)
+    if unit != None:
+        x *= unit
     y = func(x, **kwargs)
     return _trapz(y, x)
