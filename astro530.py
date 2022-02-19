@@ -30,16 +30,42 @@ def _trapz(y, x):
     area = (y[:-1] + y[1:]) / 2 * dx
     return np.sum(area)
 
-def NIntegrate(func, a, b, density, unit = None, integrator = _trapz, **kwargs):
+# def NIntegrate(func, a, b, density, unit = None, integrator = _trapz, **kwargs):
+#     '''
+#         func - function to numerically integrate
+#         a - lower bound
+#         b - upper bound
+#         density - number of subintervals per unit 
+#     '''
+#     n = round((b - a) * density)
+#     x = np.linspace(a, b, n)
+#     if unit != None:
+#         x *= unit
+#     y = func(x, **kwargs)
+#     return _trapz(y, x)
+
+### HW 4
+
+def NIntegrate(func, a, b, density, log = True, unit = None, integrator = _trapz, **kwargs):
     '''
+        Now improved to have log-spaced bins!
         func - function to numerically integrate
         a - lower bound
         b - upper bound
         density - number of subintervals per unit 
     '''
     n = round((b - a) * density)
-    x = np.linspace(a, b, n)
-    if unit != None:
-        x *= unit
-    y = func(x, **kwargs)
+    
+    if log:
+        x = np.logspace(a, b, n)
+        if unit != None:
+            x *= unit
+        y = x * func(x, **kwargs)
+        x = np.log(x)
+    else:
+        x = np.linspace(a, b, n)
+        if unit != None:
+            x *= unit
+        y = func(x, **kwargs)
+    
     return _trapz(y, x)
