@@ -3,6 +3,7 @@ import numpy as np
 from astropy import units as u
 from astropy import constants as c
 from astropy.modeling import models
+from scipy.interpolate import interp1d
 
 
 ### HW 1
@@ -69,3 +70,26 @@ def NIntegrate(func, a, b, density, log = True, unit = None, integrator = _trapz
         y = func(x, **kwargs)
     
     return _trapz(y, x)
+
+### HW 6
+
+def _getPartition(species, table):
+    T = 5040 / np.linspace(0.2, 2.0, 10)
+    log_u = table.loc[species][0:10].to_numpy()
+    
+    # remove nans so scipy doesn't get mad
+    good = np.where(~np.isnan(log_u))[0]
+    T = T[good]
+    log_u = log_u[good]
+    
+    # interpolate data points
+    f = interp1d(T, log_u, fill_value = 'extrapolate')
+    return f
+    
+def partition(species, T, table):
+    if species == 'H-' or species == 'H+':
+        u = np.ones_like(T)
+    else:
+        logU = _getPartition(species, table)
+        u = 10 ** logU(T)
+    return u 
