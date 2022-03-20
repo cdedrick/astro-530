@@ -93,3 +93,19 @@ def partition(species, T, table):
         logU = _getPartition(species, table)
         u = 10 ** logU(T)
     return u 
+
+### HW 7
+
+def saha_phi(element, T, i_table, u_table):
+    if element == 'H-':
+        u0 = partition('H-', T, u_table)
+        u1 = partition('H', T, u_table)
+        I = 0.754 * u.eV
+    else:
+        u0 = partition(element, T, u_table)
+        u1 = partition(element + '+', T, u_table)
+        I = i_table.loc[element][3] * u.eV
+        
+    T *= u.K
+    phi = (2 * np.pi * c.m_e)**(3/2) * (c.k_B * T)**(5/2) / c.h**3 * 2 * u1 / u0 * np.exp(-I/(c.k_B * T))
+    return phi.to(u.barye)
