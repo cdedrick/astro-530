@@ -221,3 +221,33 @@ def P_e(T, Pg, A_table, i_table, u_table, elements):
     P_e = iterate_Pe(Pe_guess, Pg, A_j, Phi_j)
     
     return P_e
+
+## HW 9:
+
+def K_e(Pg, Pe, A):
+    a_e = c.sigma_T
+    return (a_e * Pe /(Pg-Pe) * np.sum(A)).cgs
+
+def K_total(l, T, Pg, Pe, A_table, i_table, u_table, elements, verbose=False):
+#    Pe = P_e(T, Pg, A_table, i_table, u_table, elements)
+    Phi_H = saha_phi('H', T, i_table, u_table)
+    
+    neutral_H = 1 / (1 + Phi_H / Pe)
+    K_hydrogen = KH(l, T, Pe, i_table)
+    
+    A_j = A_table.loc[elements]['A'].to_numpy()
+    mmm = np.sum(A_table.loc[elements]['A'] * A_table.loc[elements]['weight'] * u.u).cgs
+    
+    K_electron = K_e(Pg, Pe, A_j)
+    total_per_H = K_hydrogen * neutral_H + K_electron
+    total_per_g = total_per_H / mmm
+    
+    if verbose:
+        print('K(continuum) = {:.4g}'.format(total_per_g))
+        print('K(H-_bf) = {:.4g}'.format(KHminus_bf(l, T, Pe) * neutral_H / mmm))
+        print('K(H-_ff) = {:.4g}'.format(KHminus_ff(l, T, Pe) * neutral_H / mmm * (1 - np.exp(-c.h * c.c / (l * c.k_B * T)))))
+        print('K(H_bf) = {:.4g}'.format(KH_bf(l, T, i_table) * neutral_H / mmm * (1 - np.exp(-c.h * c.c / (l * c.k_B * T)))))
+        print('K(H_ff) = {:.4g}'.format(KH_ff(l, T, i_table) * neutral_H / mmm * (1 - np.exp(-c.h * c.c / (l * c.k_B * T)))))
+        print('K(e-) = {:.4g}'.format(K_electron / mmm))
+        print('\n')
+    return total_per_g
