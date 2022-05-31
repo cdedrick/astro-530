@@ -2,7 +2,7 @@
 #TABLE 12
 #VALIIIC (Vernazza, Avrett, and Loeser 1981 ApJS 45,635)
 #
-# h     m     tau_500     T     V     n_H     n_e     Ptotal  Pgas/Ptotal  rho
+h     m     tau_500     T     V     n_H     n_e     Ptotal  Pgas/Ptotal  rho
 #(km) (g cm )            (K)  (km/s) (cm^-3) (cm^-3) (dyn cm^-2)          (g cm^-3)
 2543 5.257e-06  0.       447000 11.28 1.005e+09 1.205e+09 1.440e-01 0.9896 2.349e-15
 2298 5.365e-06 3.712e-08 141000 9.87  3.205e+09 3.839e+09 1.470e-01 0.9752 7.494e-15
